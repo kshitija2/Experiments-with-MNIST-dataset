@@ -1,3 +1,13 @@
+# Training set: Took the first 40,000, the next 40,000 starting from the 10,001st, 
+# and the last 40,000 of the original training images, lined them up in three rows, 
+# and then concatenate three images in each column to make 40,000 three digit images; 
+# Testing set: concatenated in the same way the first 8,000, the next 8,000 starting from the 1,001st, 
+# and the last 9,000 of the original testing images. 
+# The output became ordered three digits that may be labeled as numbers between 0 and 999.
+# Results:
+# Final Training Accuracy: 0.953725
+# Final Testing Accuracy: 0.86875
+
 # Import MNIST data
 import math
 import numpy as np
