@@ -1,18 +1,26 @@
 # Import MNIST data
 import math
+import numpy as np
 import tensorflow as tf
 import os
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("C:/Users/krta225/Downloads/mnistData", one_hot=True)
-images,labels=mnist.train.next_batch(5000)
+train_images=np.concatenate((mnist.train.images,mnist.validation.images))
+train_labels=np.concatenate((mnist.train.labels,mnist.validation.labels))
+test_images=mnist.test.images
+test_labels=mnist.test.labels
+train_images=(train_images * 255)+745
+test_images=(test_images * 255)+745
+train_images=(train_images)/255
+test_images=(test_images)/255
 # Parameters
 learning_rate = 0.001
-training_epochs = 70
-batch_size = 1000
+training_epochs = 100
+batch_size = 500
 display_step = 1
 # Network Parameters
 n_hidden_1 = 300 # 1st layer number of neurons
-n_hidden_2 = 150 # 2nd layer number of neurons
+n_hidden_2 = 200 # 2nd layer number of neurons
 n_input = 784 # MNIST data input
 n_classes = 10 # MNIST total classes
 # tf Graph input
@@ -50,18 +58,31 @@ regularizers = tf.nn.l2_loss(weights1) + tf.nn.l2_loss(weights2)+tf.nn.l2_loss(w
 # Defining loss and optimizer
 loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=Y)+0.001 *
 regularizers)
-optimizer = tf.train.AdamOptimizer(learning_ra
+optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
+train_op = optimizer.minimize(loss_op)
+# Initializing the variables
+init = tf.global_variables_initializer()
+# Testing model
+pred = tf.nn.softmax(logits) # Applying softmax
+correct_prediction = tf.equal(tf.argmax(pred, 1), tf.argmax(Y, 1))
+# Calculating accuracy
+accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
+Epoches_graph=[]
+TrainingAccuracy_graph=[]
+TestingAccuracy_graph=[]
+Loss_graph=[]
+with tf.Session() as sess:
  sess.run(init)
  # Training cycle
  for epoch in range(training_epochs):
  avg_cost = 0.
- total_batch = int(5000/batch_size)
+ total_batch = int(60000/batch_size)
  # Loop over all batches
  k=0
  h=0
  while k<total_batch:
- batch_x=images[h:h+batch_size]
- batch_y=labels[h:h+batch_size]
+ batch_x=train_images[h:h+batch_size]
+ batch_y=train_labels[h:h+batch_size]
  # Run optimization op (backprop) and cost op (to get loss value)
  _, c = sess.run([train_op, loss_op], feed_dict={X: batch_x,
  Y: batch_y})
@@ -71,8 +92,8 @@ optimizer = tf.train.AdamOptimizer(learning_ra
  h=h+batch_size
  # Displaying logs per epoch step
 # print("Epoch:", '%04d' % (epoch+1), "cost={:.9f}".format(avg_cost))
- Training_Acc=accuracy.eval({X:images, Y:labels})
- Testing_Acc=accuracy.eval({X:mnist.test.images, Y:mnist.test.labels})
+ Training_Acc=accuracy.eval({X:train_images, Y:train_labels})
+ Testing_Acc=accuracy.eval({X:test_images, Y:test_labels})
 # print('Training Accuracy: ',Training_Acc)
 # print('Testing Accuracy: ',Testing_Acc)
  Epoches_graph.append(epoch)
