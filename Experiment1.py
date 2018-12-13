@@ -1,3 +1,9 @@
+# Added 745 to all pixel values of the images.
+# Results:
+# Final Training Accuracy: 0.958333
+# Final Testing Accuracy: 0.9554
+
+
 # Import MNIST data
 import math
 import numpy as np
