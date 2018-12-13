@@ -1,3 +1,9 @@
+# Training set: Took the first 50,000 of the original training images and line up with the last 50,000 training images in two rows; then added the pixel values of two images in every column to make 50,000 samples; Testing set: added in the same way the first 9,000 of the original testing images with the last 9,000 testing images. The output became unordered two digits that may be labeled as numbers between 0 and 54.
+# Results:
+# Final Training Accuracy: 0.92824
+# Final Testing Accuracy: 0.828778
+
+
 # Import MNIST data
 import math
 import numpy as np
